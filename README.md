@@ -21,8 +21,17 @@ I also suggest those interested in "code/work" on the VRDC get an active: Commun
 # Related Papers, Topics, Links
 
 
+# SAS Topics to Consider
+## RSubmit
+## SAS Macros
+## SAS Views
+## FORMATS - Proc Formats
+
 # Contact Me
 I can be found/reached at:
-Li: https://www.linkedin.com/in/zeketorres/
-SASENSEI: https://sasensei.com/user/zeketorres
-Twitter: https://twitter.com/zeketorres1
+
+[LinkedIn](https://www.linkedin.com/in/zeketorres)
+
+[SASENSEI](https://sasensei.com/user/zeketorres)
+
+[Twitter](https://twitter.com/zeketorres1)
