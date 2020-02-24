@@ -41,8 +41,11 @@ Here is a link to CSC about the VRDC from long ago. [Link](https://communities.s
 
 ### VRDC Sample Data
 I've taken the CMS PUF data and pushed them thru to a CMS RIF, CMS MAX layout and style.
+
 [Max 2008-2016 Zip Data](https://drive.google.com/open?id=1GVNqJx59n3h-F4slXDpszXz8WxVB-mjU)
+
 [RIF 2008-2016 Zip Data](https://drive.google.com/open?id=15LyJkXmqz_b59-UnwP8TcQrCxDYbZi8h)
+
 [MBSF 2008-2016 Zip Data](https://drive.google.com/open?id=1ns6AXTLh4qCJ1d8p_P3XVV34etFWHG6l)
 
 ### Links to Google Drive Download for Zip versions
@@ -60,19 +63,33 @@ I can be found/reached at:
 
 ### Key Dates for 2020 and 2021
 2020/02/20 - MWSUG Call For Papers - Open
+
 2020/03/28 - SAS Global Forum Washington DC
+
 2020/04/05 - MWSUG Call For Papers Closes
+
 2020/05/10 - PharmaSug US Conference - San Francisco CA
+
 2020/06/15 - MWSUG Registration Opens
+
 2020/06/18 - Wisconsin SAS Group - Milwaukee WI
+
 2020/07/20 - MWSUG Papers Due
+
 2020/08/20 - MWSUG Hotel Rate Ends
+
 2020/09/04 - MWSUG Regular Registration Rate Ends
+
 2020/09/09 - WUSS Conference San Diego CA
+
 2020/09/13 - MWSUG Conference Pittsburgh, Pennsylvania
+
 2020/10/23 - PharmaSUG - One Day
+
 2020/10/25 - SESUG Conference Savannah GA
+
 2020/11/01 - SCSUG Conference San Antonio TX
+
 2021/04/19 - SAS Global Forum 2021 Las Vegas NV
 
 
