@@ -42,11 +42,11 @@ Here is a link to CSC about the VRDC from long ago. [Link](https://communities.s
 ### VRDC Sample Data
 I've taken the CMS PUF data and pushed them thru to a CMS RIF, CMS MAX layout and style.
 
-[Max 2008-2016 Zip Data](https://drive.google.com/open?id=1GVNqJx59n3h-F4slXDpszXz8WxVB-mjU)
+[Max 2008-2016 Zip Data](https://ztorres.net/vrdc_data)
 
-[RIF 2008-2016 Zip Data](https://drive.google.com/open?id=15LyJkXmqz_b59-UnwP8TcQrCxDYbZi8h)
+[RIF 2008-2016 Zip Data](https://ztorres.net/vrdc_data)
 
-[MBSF 2008-2016 Zip Data](https://drive.google.com/open?id=1ns6AXTLh4qCJ1d8p_P3XVV34etFWHG6l)
+[MBSF 2008-2016 Zip Data](https://ztorres.net/vrdc_data)
 
 ### Links to Google Drive Download for Zip versions
 
