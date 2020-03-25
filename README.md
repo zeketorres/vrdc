@@ -46,12 +46,12 @@ This should improve the data transmission quality for anyone interested in downl
 Data is stored in Zip, Compiled files.
 
 
-|File Name | Updated Date | Uploaded Date | MD5Sum Check Value|Current Version|Status/Notes|
-|----------|--------------|---------------|-------------------|---------------|------------|
-|[Max 2008-2016](https://ztorres.net/vrdc_data) |2020/02/21 | 2020/02/21 | ac8dc8d4fab7f833aaeb0ba75d186717 | V1|Latest|
-|[RIF 2008-2016](https://ztorres.net/vrdc_data) |2020/02/21 | 2020/02/21 | 387d37ada3d318a36e3d593085da83e8 | V1|Latest|
-|[MBSF 2008-2016b](https://ztorres.net/vrdc_data)|2020/03/25 | 2020/03/25 | ba982921a43fa1dc4012a3f17702cccb | V2|Latest|
-|[MBSF 2008-2016](https://ztorres.net/vrdc_data)|2020/02/21 | 2020/02/21 | 1360f66b86ad0287c9369c75de7012ce | V1|Older|
+|File Name            | Updated | MD5Sum Check Value|Status/Notes|
+|---------------------|---------|-------------------|------------|
+|[Max 2008-2016](https://ztorres.net/vrdc_data) |2020/02/21 | ac8dc8d4fab7f833aaeb0ba75d186717 | V1 Latest|
+|[RIF 2008-2016](https://ztorres.net/vrdc_data) |2020/02/21 | 387d37ada3d318a36e3d593085da83e8 | V1 Latest|
+|[MBSF 2008-2016b](https://ztorres.net/vrdc_data)|2020/03/25 | ba982921a43fa1dc4012a3f17702cccb | V2 Latest|
+|[MBSF 2008-2016](https://ztorres.net/vrdc_data)|2020/02/21 | 1360f66b86ad0287c9369c75de7012ce | V1 Older|
 
 
 
