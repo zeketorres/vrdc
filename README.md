@@ -53,6 +53,10 @@ Data is stored in Zip, Compiled files.
 |[MBSF 2008-2016b](https://ztorres.net/vrdc_data)|2020/03/25 | ba982921a43fa1dc4012a3f17702cccb | V2 Latest|
 |[MBSF 2008-2016](https://ztorres.net/vrdc_data)|2020/02/21 | 1360f66b86ad0287c9369c75de7012ce | V1 Older|
 
+### This VRDC Data and SAS University Edition AWS
+I am building a VRDC emulation session and will record some tutorial media to share.
+You can get the information on [SAS University Edition AWS Here](https://communities.sas.com/t5/SAS-Analytics-U/How-to-Set-Up-SAS-University-Edition-on-Amazon-Web-Services-AWS/m-p/506033#M8216).
+What my coming tutorials will show is how to configure your SASUE AWS session to have it look and feel like the VRDC with this data.
 
 
 ### Contact Me
