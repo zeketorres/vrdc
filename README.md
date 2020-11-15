@@ -20,6 +20,30 @@ The size and scope of the data is - vast. Hundreds of millions of claims, rows e
 
 [Link4: CMS Announces VRDC](https://www.cms.gov/newsroom/press-releases/cms-announces-new-data-sharing-tool)
 
+[Link5: CMS Medicare Claims Data](https://healthdata.gov/dataset/center-medicare-medicaid-services-cms-medicare-claims-data)
+
+[Link6: CCW Medicare Encounter Data User Guide ](https://www.ccwdata.org/documents/10280/19002246/ccw-medicare-encounter-data-user-guide.pdf)
+
+[Link7: Medicare FFS Payment](https://www.cms.gov/Medicare/Medicare-Fee-for-Service-Payment/AcuteInpatientPPS/Acute-Inpatient-Files-for-Download.html)
+
+[Link8: CMS OpenPayments Data Dictionary](https://www.cms.gov/OpenPayments/Downloads/OpenPaymentsDataDictionary.pdf)
+
+[Link9: CMS PUF](https://www.cms.gov/Research-Statistics-Data-and-Systems/Downloadable-Public-Use-Files/BSAPUFS/Inpatient_Claims.html)
+
+[Link10: CMS Files for Order DUA](https://www.cms.gov/Research-Statistics-Data-and-Systems/Files-for-Order/Data-Disclosures-Data-Agreements/DUA_-_NewLDS.html)
+
+[Link11: CMS OpenPayments Dataset Downloads](https://www.cms.gov/openpayments/explore-the-data/dataset-downloads.html)
+
+[Link12: CMS Stats and Trends](https://www.cms.gov/research-statistics-data-and-systems/statistics-trends-and-reports/medicare-provider-charge-data/inpatient.html)
+
+[Link13: RESDAC Difference between RIF LDS PUF](https://www.resdac.org/articles/differences-between-rif-lds-and-puf-data-files)
+
+[Link14: RESDAC CMS File Availability](https://www.resdac.org/cms-data/file-availability)
+
+[Link15: RESDAC CMS IP Encounter Data](https://www.resdac.org/cms-data/files/ip-encounter/data-documentation)
+
+[Link16: RESDAC File Availability](https://www.resdac.org/file-availability)
+
 
 ### The Goal of this Repo
 Going to use this repo to gather and collect useful facts, code bits, Meta Data on the VRDC and SAS.
