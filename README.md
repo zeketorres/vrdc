@@ -86,6 +86,12 @@ You can get the information on [SAS University Edition AWS Here](https://communi
 What my coming tutorials will show is how to configure your SASUE AWS session to have it look and feel like the VRDC with this data.
 
 Caution: As of 2020/11 - I am aware of official and semi-official news alerts that SAS will depreicate the SAS University Edition.  It seems mostly related to the VM software providers no longer supporting or working with how the SAS UE works.  I do not have all the details or all the specifics.  I am simply alerting YOU the reader to the likely scenario that I have not been able to keep up with some aspects of SAS UE/AWS.  So - the overall idea to emulate VRDC still is relevant and possible.  We just may need to adapt further and use SAS Studio on AWS or some proxy of that.  I may not have all the specifics - today - but I am trying to avoid a need to fully update this page since some elements may shift over time.  What is important for you, the reader with desire to work on this - is that there will be some options that get us the "feeling" of working on the VRDC.  HTH  (this memo added 2020/11/15).
+Update: 2021/05 - It is official that the download version of SAS UE is retiring. You are advised to download all necessary elements of it and have it working. That is if you choose this path for running SAS code. Its been mentioned that existing SAS UE copies will still work, just not supported by SAS (soon).
+
+### Other ways to RUN SAS
+Another alternative is the SAS On Demand Edition - via SAS Cloud/Web.  That service is free and allows you to run SAS with SAS Studio.
+Users get 5gigs of space.  Some initial testing with the data I'm publishing here shows that it does stay under 5gigs as-is.  I'll soon check that and see what to adjust if the data usage is not comfortable for the SAS space provided.
+
 
 ### Contact Me
 I can be found/reached at:
