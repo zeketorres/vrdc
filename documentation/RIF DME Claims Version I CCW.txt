@@ -1,0 +1,2189 @@
+
+
+		DME Claims Data Dictionary -- CCW Version 06/2010
+
+
+If associated CCW data is read into a SAS version 6.x environment, the "SHORT NAMES" 
+will be displayed in the output file.
+
+If associated CCW data is read into a SAS version 8.x environment, the "LONG NAMES" 
+will be displayed in the output file.
+
+
+CCW DMERC Base Claim File:
+
+
+              NAME              TYPE   LENGTH
+------------------------------------   ------ 
+ Encrypted 723 Beneficiary	CHAR	  15
+ ID
+
+	A unique CCW beneficiary identifier field 
+	that is specific to the Chronic Condition Warehouse.  
+	This field is encrypted prior to delivery to 
+	researchers. The BENE_ID field is used to cross-
+	reference data for each beneficiary across all claim	
+	and assessment data files.
+	
+	SHORT NAME: BENE_ID
+	LONG NAME: BENE_ID
+
+	SOURCE:
+	CCW
+
+ Claim ID		        NUM	 13    
+
+	This number is assigned when a claim is 
+	processed in the Chronic Condition Warehouse.
+	It identifies lines that are submitted from
+	the same claim.
+ 
+	SHORT NAME: CLM_ID
+	LONG NAME: CLM_ID
+
+	SOURCE:
+	CCW
+
+ NCH Near Line Record          CHAR       1
+ Identification Code
+
+     A code defining the type of claim record being processed.
+
+     SHORT NAME: RIC_CD
+     LONG NAME: NCH_NEAR_LINE_REC_IDENT_CD
+
+     CODES:
+     NCH Near-Line Record Identification Code Table
+     ----------------------------------------------
+     O = Part B physician/supplier claim
+         record (processed by local carriers;
+         can include DMEPOS services)
+     V = Part A institutional claim record
+         (inpatient (IP), skilled nursing
+         facility (SNF), christian science
+         (CS), home health agency (HHA), or
+         hospice)
+     W = Part B institutional claim record
+         (outpatient (OP), HHA)
+     U = Both Part A and B institutional home
+         health agency (HHA) claim records --
+         due to HHPPS and HHA A/B split.
+         (effective 10/00)
+     M = Part B DMEPOS claim record (processed
+         by DME Regional Carrier) (effective 10/93)
+
+     SOURCE:
+     NCH
+
+
+ NCH Claim Type Code           CHAR       2
+
+     The code used to identify the type of claim record being
+     processed in NCH.
+
+
+     NOTE1:  During the Version H conversion this field was
+             populated with data through- out history (back to
+             service year 1991).
+     NOTE2:  During the Version I conversion this field was
+             expanded to include inpatient 'full' encounter
+             claims (for service dates after 6/30/97).
+             Placeholders for Physician and Outpatient encounters
+             (available in NMUD) have also been added.
+
+     SHORT NAME: CLM_TYPE
+     LONG NAME: NCH_CLM_TYPE_CD
+
+     DERIVATION:
+     FFS CLAIM TYPE CODES DERIVED FROM:
+       NCH_NEAR_LINE_REC_IDENT_CD
+       NCH PMT_EDIT_RIC_CD
+       NCH CLM_TRANS_CD
+       NCH PRVDR_NUM
+
+     INPATIENT 'FULL' ENCOUNTER TYPE CODE DERIVED FROM:
+       (Pre-HDC processing -- AVAILABLE IN NCH)
+       CLM_MCO_PD_SW
+       CLM_RLT_COND_CD
+       MCO_CNTRCT_NUM
+       MCO_OPTN_CD
+       MCO_PRD_EFCTV_DT
+       MCO_PRD_TRMNTN_DT
+
+     INPATIENT 'FULL' ENCOUNTER TYPE CODE DERIVED FROM:
+       (HDC processing -- AVAILABLE IN NMUD)
+       FI_NUM
+
+     INPATIENT 'ABBREVIATED' ENCOUNTER TYPE CODE DERIVED
+     FROM: (HDC processing -- AVAILABLE IN NMUD)
+       FI_NUM
+       CLM_FAC_TYPE_CD
+       CLM_SRVC_CLSFCTN_TYPE_CD
+       CLM_FREQ_CD
+     NOTE:  From 7/1/97 to the start of HDC processing(?),
+     abbreviated inpatient encounter claims are not
+     available in NCH or NMUD.
+
+     PHYSICIAN 'FULL' ENCOUNTER TYPE CODE DERIVED FROM:
+       (AVAILABLE IN NMUD)
+       CARR_NUM
+       CLM_DEMO_ID_NUM
+
+     OUTPATIENT 'FULL' ENCOUNTER TYPE CODE DERIVED FROM:
+       (AVAILABLE IN NMUD)
+       FI_NUM
+
+     OUTPATIENT 'ABBREVIATED' ENCOUNTER TYPE CODE
+     DERIVED FROM:  (AVAILABLE IN NMUD)
+       FI_NUM
+       CLM_FAC_TYPE_CD
+       CLM_SRVC_CLSFCTN_TYPE_CD
+       CLM_FREQ_CD
+
+     DERIVATION RULES:
+
+       SET CLM_TYPE_CD TO 10 (HHA CLAIM) WHERE THE
+       FOLLOWING CONDITIONS ARE MET:
+       1.   CLM_NEAR_LINE_RIC_CD EQUAL 'V','W' OR 'U'
+       2.   PMT_EDIT_RIC_CD EQUAL 'F'
+       3.   CLM_TRANS_CD EQUAL '5'
+
+       SET CLM_TYPE_CD TO 20 (SNF NON-SWING BED CLAIM)
+       WHERE THE FOLLOWING CONDITIONS ARE MET:
+       1.   CLM_NEAR_LINE_RIC_CD EQUAL 'V'
+       2.   PMT_EDIT_RIC_CD EQUAL 'C' OR 'E'
+       3.   CLM_TRANS_CD EQUAL '0' OR '4'
+       4.   POSITION 3 OF PRVDR_NUM IS NOT 'U', 'W', 'Y'
+            OR 'Z'
+
+       SET CLM_TYPE_CD TO 30 (SNF SWING BED CLAIM)
+       WHERE THE FOLLOWING CONDITIONS ARE MET:
+       1.   CLM_NEAR_LINE_RIC_CD EQUAL 'V'
+       2.   PMT_EDIT_RIC_CD EQUAL 'C' OR 'E'
+       3.   CLM_TRANS_CD EQUAL '0' OR '4'
+       4.   POSITION 3 OF PRVDR_NUM EQUAL 'U', 'W', 'Y'
+            OR 'Z'
+
+       SET CLM_TYPE_CD TO 40 (OUTPATIENT CLAIM)
+       WHERE THE FOLLOWING CONDITIONS ARE MET:
+       1.   CLM_NEAR_LINE_RIC_CD EQUAL 'W'
+       2.   PMT_EDIT_RIC_CD EQUAL 'D'
+       3.   CLM_TRANS_CD EQUAL '6'
+
+       SET CLM_TYPE_CD TO 41 (OUTPATIENT 'FULL'
+       ENCOUNTER CLAIM -- AVAILABLE IN NMUD) WHERE
+       THE FOLLOWING CONDITIONS ARE MET:
+       1.   CLM_NEAR_LINE_RIC_CD EQUAL 'W'
+       2.   PMT_EDIT_RIC_CD EQUAL 'D'
+       3.   CLM_TRANS_CD EQUAL '6'
+       4.   FI_NUM = 80881
+
+       SET CLM_TYPE_CD TO 42 (OUTPATIENT 'ABBREVIATED'
+       ENCOUNTER CLAIMS -- AVAILABLE IN NMUD)
+       1.   FI_NUM = 80881
+       2.   CLM_FAC_TYPE_CD = '1' OR '8'; CLM_SRVC_
+            CLSFCTN_TYPE_CD = '2', '3' OR '4' &
+            CLM_FREQ_CD = 'Z', 'Y' OR 'X'
+
+       SET CLM_TYPE_CD TO 50 (HOSPICE CLAIM)
+       WHERE THE FOLLOWING CONDITIONS ARE MET:
+       1.   CLM_NEAR_LINE_RIC_CD EQUAL 'V'
+       2.   PMT_EDIT_RIC_CD EQUAL 'I'
+       3.   CLM_TRANS_CD EQUAL 'H'
+
+       SET CLM_TYPE_CD TO 60 (INPATIENT CLAIM)
+       WHERE THE FOLLOWING CONDITIONS ARE MET:
+       1.   CLM_NEAR_LINE_RIC_CD EQUAL 'V'
+       2.   PMT_EDIT_RIC_CD EQUAL 'C' OR 'E'
+       3.   CLM_TRANS_CD EQUAL '1' '2' OR '3'
+
+       SET CLM_TYPE_CD TO 61 (INPATIENT 'FULL' ENCOUNTER
+       CLAIM - PRIOR TO HDC PROCESSING - AFTER 6/30/97 -
+       12/4/00) WHERE THE FOLLOWING CONDITIONS ARE MET:
+       1.   CLM_MCO_PD_SW = '1'
+       2.   CLM_RLT_COND_CD = '04'
+       3.   MCO_CNTRCT_NUM
+            MCO_OPTN_CD = 'C'
+            CLM_FROM_DT & CLM_THRU_DT ARE WITHIN THE
+            MCO_PRD_EFCTV_DT & MCO_PRD_TRMNTN_DT
+            ENROLLMENT PERIODS
+
+       SET_CLM_TYPE_CD TO 61 (INPATIENT 'FULL' ENCOUNTER
+       CLAIM -- EFFECTIVE WITH HDC PROCESSING) WHERE THE
+       FOLLOWING CONDITIONS ARE MET:
+       1.   CLM_NEAR_LINE_RIC_CD EQUAL 'V'
+       2.   PMT_EDIT_RIC_CD EQUAL 'C' OR 'E'
+       3.   CLM_TRANS_CD EQUAL '1' '2' OR '3'
+       4.   FI_NUM = 80881
+
+       SET CLM_TYPE_CD TO 62 (INPATIENT 'ABBREVIATED'
+       ENCOUNTER CLAIM -- AVAILABLE IN NMUD) WHERE
+       THE FOLLOWING CONDITIONS ARE MET:
+       1.   FI_NUM = 80881 AND
+       2.   CLM_FAC_TYPE_CD = '1'; CLM_SRVC_CLSFCTN_
+            TYPE_CD = '1'; CLM_FREQ_CD = 'Z'
+
+       SET CLM_TYPE_CD TO 71 (RIC O non-DMEPOS CLAIM)
+       WHERE THE FOLLOWING CONDITIONS ARE MET:
+       1.   CLM_NEAR_LINE_RIC_CD EQUAL 'O'
+       2.   HCPCS_CD not on DMEPOS table
+
+       SET CLM_TYPE_CD TO 72 (RIC O DMEPOS CLAIM)
+       WHERE THE FOLLOWING CONDITIONS ARE MET:
+       1.   CLM_NEAR_LINE_RIC_CD EQUAL 'O'
+       2.   HCPCS_CD on DMEPOS table (NOTE: if one or
+            more line item(s) match the HCPCS on the
+            DMEPOS table).
+
+       SET CLM_TYPE_CD TO 73 (PHYSICIAN ENCOUNTER CLAIM--
+       EFFECTIVE WITH HDC PROCESSING) WHERE THE FOLLOWING
+       CONDITIONS ARE MET:
+       1.   CARR_NUM = 80882 AND
+       2.   CLM_DEMO_ID_NUM = 38
+
+       SET CLM_TYPE_CD TO 81 (RIC M non-DMEPOS DMERC
+          CLAIM)
+       WHERE THE FOLLOWING CONDITIONS ARE MET:
+       1.   CLM_NEAR_LINE_RIC_CD EQUAL 'M'
+       2.   HCPCS_CD not on DMEPOS table
+
+       SET CLM_TYPE_CD TO 82 (RIC M DMEPOS DMERC CLAIM)
+       WHERE THE FOLLOWING CONDITIONS ARE MET:
+       1.   CLM_NEAR_LINE_RIC_CD EQUAL 'M'
+       2.   HCPCS_CD on DMEPOS table (NOTE: if one or
+            more line item(s) match the HCPCS on the
+            DMEPOS table).
+
+     CODES:
+     NCH Claim Type Table
+     --------------------
+     10 = HHA claim
+     20 = Non swing bed SNF claim
+     30 = Swing bed SNF claim
+     40 = Outpatient claim
+     41 = Outpatient 'Full-Encounter' claim
+          (available in NMUD)
+     42 = Outpatient 'Abbreviated-Encounter' claim
+          (available in NMUD)
+     50 = Hospice claim
+     60 = Inpatient claim
+     61 = Inpatient 'Full-Encounter' claim
+     62 = Inpatient 'Abbreviated-Encounter claim
+          (available in NMUD)
+     71 = RIC O local carrier non-DMEPOS claim
+     72 = RIC O local carrier DMEPOS claim
+     73 = Physician 'Full-Encounter' claim
+          (available in NMUD)
+     81 = RIC M DMERC non-DMEPOS claim
+     82 = RIC M DMERC DMEPOS claim
+
+     SOURCE:
+     NCH
+
+ Claim From Date              DATE      8
+
+     The first day on the billing statement
+     covering services rendered to the bene-
+     ficiary (a.k.a. 'Statement Covers From Date').
+
+        NOTE:  For Home Health PPS claims, the 'from'
+        date and the 'thru' date on the RAP (initial
+        claim) must always match.
+
+        8 DIGITS UNSIGNED
+
+        SHORT NAME: FROM_DT
+        LONG NAME: CLM_FROM_DT
+
+        EDIT-RULES:
+
+        YYYYMMDD
+
+        SOURCE:
+        CWF
+
+ Claim Through Date           DATE     8
+
+     The last day on the billing statement covering
+     services rendered to the beneficiary (a.k.a
+     'Statement Covers Thru Date').
+
+        NOTE:  For Home Health PPS claims, the 'from'
+        date and the 'thru' date on the RAP (initial
+        claim) must always match.
+
+	If the year of the original Claim Through
+	Date (THRU_DT) was future to the year of
+	the Weekly Processing Date (WKLY_DT), the
+	CCW Claim Through Date (THRU_DT) has been
+	changed to 12/31/YYYY with YYYY representing
+	the year of the Weekly Processing Date
+	(WKLY_DT).
+
+        8 DIGITS UNSIGNED
+
+        SHORT NAME: THRU_DT
+        LONG NAME: CLM_THRU_DT
+
+        EDIT-RULES:
+        YYYYMMDD
+
+        SOURCE:
+        CWF
+ 
+ NCH Weekly Claim Processing  	DATE      8	  
+ Date
+
+     The date the weekly NCH database load
+     process cycle begins, during which the claim
+     records are loaded into the Nearline file.
+     This date will always be a Friday, although
+     the claims will actually be appended to the
+     database subsequent to the date.
+
+        8 DIGITS UNSIGNED
+
+        SHORT NAME: WKLY_DT
+        LONG NAME: NCH_WKLY_PROC_DT
+
+        EDIT-RULES:
+        YYYYMMDD
+
+        SOURCE:
+        NCH
+
+ Carrier Claim Entry Code     	CHAR      1
+
+     Carrier-generated code describing whether the
+     Part B claim is an original debit, full credit,
+     or replacement debit.
+
+     SHORT NAME: ENTRY_CD
+     LONG NAME: CARR_CLM_ENTRY_CD
+
+     CODES:
+     1 = Original debit; void of original debit
+         (If CLM_DISP_CD = 3, code 1 means
+         voided original debit)
+     3 = Full credit
+     5 = Replacement debit
+     9 = Accrete bill history only (internal;
+         effective 2/22/91)
+
+     SOURCE:
+     CWF
+
+
+ Claim Disposition Code         CHAR      2
+
+     Code indicating the disposition or outcome of the processing
+     of the claim record.
+
+     SHORT NAME: DISP_CD
+     LONG NAME: CLM_DISP_CD
+
+     CODES:
+     Claim Disposition Table
+     -----------------------
+     01 = Debit accepted
+     02 = Debit accepted (automatic adjustment) applicable through 4/4/93
+     03 = Cancel accepted
+     61 = *Conversion code: debit accepted
+     62 = *Conversion code: debit accepted (automatic adjustment)
+     63 = *Conversion code: cancel accepted
+
+        *Used only during conversion period: 1/1/91 - 2/21/91
+
+     SOURCE:
+     CWF
+
+ Carrier Number              	CHAR      5
+
+     The identification number assigned by HCFA to a
+     carrier authorized to process claims from a
+     physician or supplier.
+
+     SHORT NAME: CARR_NUM
+     LONG NAME: CARR_NUM
+
+     CODES:
+     Carrier Number Table
+     --------------------
+	00510 = Alabama BS (eff. 1983)
+	00511 = Georgia - Alabama BS (eff. 1998)
+	00512 = Mississippi - Alabama BS (eff. 2000)
+	00520 = Arkansas BS (eff. 1983)
+	00521 = New Mexico - Arkansas BS (eff. 1998)
+	00522 = Oklahoma - Arkansas BS (eff. 1998)
+	00523 = Missouri - Arkansas BS (eff. 1999)
+	00528 = Louisianna - Arkansas BS (eff. 1984)
+	00542 = California BS (eff. 1983; term. 1996)
+	00550 = Colorado BS (eff. 1983; term. 1994)
+	00570 = Delaware - Pennsylvania BS (eff. 1983; term. 1997)
+	00580 = District of Columbia - Pennsylvania BS (eff. 1983; term. 1997)
+	00590 = Florida BS (eff. 1983)
+	00591 = Connecticut - Florida BS (eff. 2000)
+	00621 = Illinois BS - HCSC (eff. 1983; term. 1998)
+	00623 = Michigan - Illinois Blue Shield (eff. 1995) (term. 1998)
+	00630 = Indiana - Administar (eff. 1983)
+	00635 = DMERC-B (Administar Federal, Inc.) (eff. 1993)
+	00640 = Iowa - Wellmark, Inc. (eff. 1983; term. 1998)
+	00645 = Nebraska - Iowa BS (eff. 1985; term. 1987)
+	00650 = Kansas BS (eff. 1983)
+	00655 = Nebraska - Kansas BS (eff. 1988)
+	00660 = Kentucky - Administar (eff. 1983)
+	00690 = Maryland BS (eff. 1983; term. 1994)
+	00700 = Massachusetts BS (eff. 1983; term. 1997)
+	00710 = Michigan BS (eff. 1983; term. 1994)
+	00720 = Minnesota BS (eff. 1983; term. 1995)
+	00740 = Missouri - BS Kansas City (eff. 1983)
+	00751 = Montana BS (eff. 1983)
+	00770 = New Hampshire/Vermont Physician Services (eff. 1983; term. 1984)
+	00780 = New Hampshire/Vermont - Massachusetts BS (eff. 1985; term. 1997)
+	00801 = New York - Western BS (eff. 1983)
+	00803 = New York - Empire BS (eff. 1983)
+	00805 = New Jersey - Empire BS (eff. 3/99)
+	00811 = DMERC (A) - Western New York BS (eff. 2000)
+	00820 = North Dakota - North Dakota BS (eff. 1983)
+	00824 = Colorado - North Dakota BS (eff. 1995)
+	00825 = Wyoming - North Dakota BS (eff. 1990)
+	00826 = Iowa - North Dakota BS (eff. 1999)
+	00831 = Alaska - North Dakota BS (eff. 1998)
+	00832 = Arizona -  North Dakota BS (eff. 1998)
+	00833 = Hawaii - North Dakota BS (eff. 1998)
+	00834 = Nevada - North Dakota BS (eff. 1998)
+	00835 = Oregon - North Dakota BS (eff. 1998)
+	00836 = Washington - North Dakota BS (eff. 1998)
+	00860 = New Jersey - Pennsylvania BS (eff. 1988; term. 1999)
+	00865 = Pennsylvania BS (eff. 1983)
+	00870 = Rhode Island BS (eff. 1983)
+	00880 = South Carolina BS (eff. 1983)
+	00882 = RRB - South Carolina PGBA (eff. 2000)
+	00885 = DMERC C - Palmetto (eff. 1993)
+	00900 = Texas BS (eff. 1983)
+	00901 = Maryland - Texas BS (eff. 1995)
+	00902 = Delaware - Texas BS (eff. 1998)
+	00903 = District of Columbia - Texas BS (eff. 1998)
+	00904 = Virginia - Texas BS (eff. 2000)
+	00910 = Utah  BS (eff. 1983)
+	00951 = Wisconsin - Wisconsin Phy Svc (eff. 1983)
+	00952 = Illinois - Wisconsin Phy Svc (eff. 1999)
+	00953 = Michigan - Wisconsin Phy Svc (eff. 1999)
+	00954 = Minnesota - Wisconsin Phy Svc (eff. 2000)
+	00973 = Triple-S, Inc. - Puerto Rico (eff. 1983)
+	00974 = Triple-S, Inc. - Virgin Islands
+	01020 = Alaska - AETNA (eff. 1983; term. 1997)
+	01030 = Arizona - AETNA (eff. 1983; term. 1997)
+	01040 = Georgia - AETNA (eff. 1988; term. 1997)
+	01120 = Hawaii - AETNA (eff. 1983; term. 1997)
+	01290 = Nevada - AETNA (eff. 1983; term. 1997)
+	01360 = New Mexico - AETNA (eff. 1986; term. 1997)
+	01370 = Oklahoma - AETNA (eff. 1983; term. 1997)
+	01380 = Oregon - AETNA (eff. 1983; term. 1997
+	01390 = Washington - AETNA (eff. 1994; term. 1997)
+	02050 = California - TOLIC (eff. 1983) (term. 2000)
+	03070 = Connecticut General Life Insurance Co. (eff. 1983; term. 1985)
+	05130 = Idaho - Connecticut General (eff. 1983)
+	05320 = New Mexico - Equitable Insurance (eff. 1983; term. 1985)
+	05440 = Tennessee - Connecticut General (eff. 1983)
+	05530 = Wyoming - Equitable Insurance (eff. 1983) (term. 1989)
+	05535 = North Carolina - Connecticut General (eff. 1988)
+	05655 = DMERC-D - Connecticut General (eff. 1993)
+	10071 = Railroad Board Travelers (eff. 1983) (term. 2000)
+	10230 = Connecticut - Metra Health (eff. 1986) (term. 2000)
+	10240 = Minnesota - Metra Health (eff. 1983) (term. 2000)
+	10250 = Mississippi - Metra Health (eff. 1983) (term. 2000)
+	10490 = Virginia - Metra Health (eff. 1983) (term. 2000)
+	10555 = Travelers Insurance Co. (eff. 1993) (term. 2000)
+	11260 = Missouri - General American Life (eff. 1983; term. 1998)
+	14330 = New York - GHI (eff. 1983)
+		16360 = Ohio - Nationwide Insurance Co.
+	16510 = West Virginia - Nationwide Insurance Co.
+	21200 = Maine - BS of Massachusetts
+	31140 = California - National Heritage Ins.
+	31142 = Maine - National Heritage Ins.
+	31143 = Massachusetts - National Heritage Ins.
+	31144 = New Hampshire - National Heritage Ins.
+	31145 = Vermont - National Heritage Ins.
+	31146 = So. California - NHIC (eff. 2000)
+
+	SOURCE:
+	CWF
+
+ Carrier Claim Payment        	CHAR      1
+ Denial Code
+
+	The code on a noninstitutional claim indicating to
+	whom payment was made or if the claim was denied.
+
+	SHORT NAME: PMTDNLCD
+	LONG NAME: CARR_CLM_PMT_DNL_CD
+
+	CODES:
+	Carrier Claim Payment Denial Table
+	----------------------------------
+	0 = Denied
+	1 = Physician/supplier
+	2 = Beneficiary
+	3 = Both physician/supplier and beneficiary
+	4 = Hospital (hospital based physicians)
+	5 = Both hospital and beneficiary
+	6 = Group practice prepayment plan
+	7 = Other entries (e.g. Employer, union)
+	8 = Federally funded
+	9 = PA service
+	A = Beneficiary under limitation of liability
+	B = Physician/supplier under limitation of liability
+	D = Denied due to demonstration involvement (eff. 5/97)
+	E = MSP cost avoided IRS/SSA/HCFA Data Match (eff. 7/3/00)
+	F = MSP cost avoided HMO Rate Cell (eff. 7/3/00)
+	G = MSP cost avoided Litigation Settlement (eff. 7/3/00)
+	H = MSP cost avoided Employer Voluntary Reporting (eff. 7/3/00)
+	J = MSP cost avoided Insurer Voluntary Reporting (eff. 7/3/00)
+	K = MSP cost avoided Initial Enrollment Questionnaire (eff. 7/3/00)
+	P = Physician ownership denial (eff 3/92)
+	Q = MSP cost avoided - (Contractor #88888) voluntary agreement (eff. 1/98)
+	T = MSP cost avoided - IEQ contractor (eff. 7/96) (obsolete 6/30/00)
+	U = MSP cost avoided - HMO rate cell adjustment (eff. 7/96) (obsolete 
+	    6/30/00)
+	V = MSP cost avoided - litigation settlement (eff. 7/96) (obsolete 6/30/00)
+	X = MSP cost avoided - generic
+	Y = MSP cost avoided - IRS/SSA data match project (obsolete 6/30/00)
+
+	SOURCE:
+	CWF
+
+
+ Claim Payment Amount        	  NUM     12
+       
+   	Amount of payment made from the Medicare trust fund for the
+ 	services covered by the claim record.  Generally, the amount
+ 	is calculated by the FI or carrier; and represents what was
+	paid to the institutional provider, physician, or supplier,
+ 	with the exceptions noted below.  **NOTE:  In some
+ 	situations, a negative claim payment amount may be pre-
+ 	sent; e.g., (1) when a beneficiary is charged the full
+ 	deductible during a short stay and the deductible exceeded
+ 	the amount Medicare pays; or (2) when a beneficiary is
+ 	charged a coinsurance amount during a long stay and the
+ 	coinsurance amount exceeds the amount Medicare pays (most
+ 	prevalent situation involves psych hospitals who are paid a
+ 	daily per diem rate no matter what the charges are.)
+  
+ 	Under IP PPS, inpatient hospital services are paid based on
+ 	a predetermined rate per discharge, using the DRG patient
+ 	classification system and the PRICER program.   On the IP
+ 	PPS claim, the payment amount includes the DRG outlier
+ 	approved payment amount, disproportionate share (since
+ 	5/1/86), indirect medical education (since 10/1/88), total
+ 	PPS capital (since 10/1/91).  After 4/1/03, the payment
+ 	amount could also include a "new technology" add-on amount.
+ 	It does NOT include the pass-thru amounts (i.e., capital-
+ 	related costs, direct medical education costs, kidney
+ 	acquisition costs, bad debts); or any beneficiary-paid
+ 	amounts (i.e., deductibles and coinsurance); or any
+ 	any other payer reimbursement.
+  
+ 	Under IRFPPS, inpatient rehabilitation services are paid
+ 	based on a predetermined rate per discharge, using the
+ 	Case Mix Group (CMG) classification system and the PRICER
+ 	program.  From the CMG on the IRF PPS claim, payment is
+ 	based on a standard payment amount for operating and
+ 	capital cost for that facility (including routine and
+ 	ancillary services).   The payment is adjusted for wage,
+ 	the % of low-income patients (LIP), locality, transfers,
+ 	interrupted stays, short stay cases, deaths, and high
+ 	cost outliers.   Some or all of these adjustments could
+ 	apply.  The CMG payment does NOT include certain pass-
+ 	through costs (i.e. bad debts, approved education
+ 	activities); beneficiary-paid amounts, other payer reim-
+ 	bursement,and other services outside of the scope of PPS.
+  
+ 	Under LTCH PPS, long term care hospital services are paid
+ 	based on a predetermined rate per discharge based on the
+ 	DRG and the PRICER program.   Payments are based on a
+ 	single standard Federal rate for both inpatient operating
+ 	and capital-related costs (including routine and ancillary
+ 	services), but do NOT include certain pass-through costs
+ 	(i.e. bad debts, direct medical education, new technologies
+ 	and blood clotting factors).  Adjustments to the payment
+ 	may occur due to short-stay outliers, interrupted stays,
+ 	high cost outliers, wage index, and cost of living adjust-
+ 	ments.
+  
+ 	Under SNF PPS, SNFs will classify beneficiaries using the
+ 	patient classification system known as RUGS III.  For the
+ 	SNF PPS claim, the SNF PRICER will calculate/return the rate
+ 	for each revenue center line item with revenue center code =
+ 	'0022'; multiply the rate times the units count; and then
+ 	sum the amount payable for all lines with revenue center
+ 	code '0022' to determine the total claim payment amount.
+  
+ 	Under Outpatient PPS, the national ambulatory payment
+ 	classification (APC) rate that is calculated for each APC
+ 	group is the basis for determining the total claim payment.
+ 	The payment amount also includes the outlier payment and
+ 	interest.
+  
+ 	Under Home Health PPS, beneficiaries will be classified into
+ 	an appropriate case mix category known as the Home Health
+ 	Resource Group.  A HIPPS code is then generated
+ 	corresponding to the case mix category (HHRG).
+  
+ 	For the RAP, the PRICER will determine the payment amount
+ 	appropriate to the HIPPS code by computing 60% (for first
+ 	episode) or 50% (for subsequent episodes) of the case mix
+ 	episode payment.  The payment is then wage index adjusted.
+  
+ 	For the final claim, PRICER calculates 100% of the amount
+ 	due, because the final claim is processed as an adjustment
+ 	to the RAP, reversing the RAP payment in full.  Although
+ 	final claim will show 100% payment amount, the provider will
+ 	actually receive the 40% or 50% payment. The payment may
+ 	also include outlier payments.
+  
+ 	Exceptions:  For claims involving demos and BBA encounter
+ 	data, the amount reported in this field may not just
+ 	represent the actual provider payment.
+  
+ 	For demo Ids '01','02','03','04' -- claims contain
+ 	amount paid to the provider, except that special
+ 	'differentials' paid outside the normal payment system
+ 	are not included.
+  
+ 	For demo Ids '05','15' -- encounter data 'claims'
+ 	contain amount Medicare would have paid under FFS,
+ 	instead of the actual payment to the MCO.
+  
+ 	For demo Ids '06','07','08' -- claims contain actual
+ 	provider payment but represent a special negotiated
+ 	bundled payment for both Part A and Part B services.
+ 	To identify what the conventional provider Part A
+ 	payment would have been, check value code = 'Y4'.   The
+ 	related noninstitutional (physician/supplier) claims
+ 	contain what would have been paid had there been no
+ 	demo.
+  
+ 	For BBA encounter data (non-demo) -- 'claims' contain
+ 	amount Medicare would have paid under FFS, instead of
+ 	the actual payment to the BBA plan.
+  
+	SHORT NAME: PMT_AMT
+	LONG NAME: CLM_PMT_AMT
+
+ 	LENGTH: 9.2
+	SIGNED : Y
+  
+ 	COMMENTS :
+ 	Prior to Version H the size of this field was S9(7)V99.  Als
+ 	the noninstitutional claim records carried this field as a l
+ 	item.  Effective with Version H, this element is a claim lev
+ 	field across all claim types (and the line item field has be
+ 	renamed.)
+  
+ 	SOURCE: CWF
+  
+ 	LIMITATIONS :
+ 	Prior to 4/6/93, on inpatient, outpatient, and
+ 	physician/supplier claims containing a
+ 	CLM_DISP_CD of '02', the amount shown as the Medicare
+ 	reimbursement does not take into consideration
+ 	any CWF automatic adjustments (involving erroneous
+ 	deductibles in most cases).  In as many as 30% of
+ 	the claims (30% IP, 15% OP, 5% PART B), the
+	reimbursement reported on the claims may be over
+	or under the actual Medicare payment amount.
+  
+ 	REFER TO :
+ 	PMT_AMT_EXCEDG_CHRG_AMT_LIM
+  
+ 	EDIT RULES :
+ 	$$$$$$$$$CC
+
+  
+ Carrier Claim Primary       	NUM      12
+ Payer Paid Amount
+  
+ 	Effective with Version H, the amount of a
+ 	payment made on behalf of a Medicare bene-
+ 	ficiary by a primary payer other than Medicare,
+ 	that the provider is applying to covered
+ 	Medicare charges on a non-institutional claim.
+  
+ 	NOTE:  During the Version H conversion, this field
+ 	was populated with data throughout history (back to
+	service year 1991) by summing up the line item primary
+ 	payer amounts.
+  
+	SHORT NAME: PRPAYAMT
+	LONG NAME: CARR_CLM_PRMRY_PYR_PD_AMT
+  
+ 	LENGTH: 9.2
+	SIGNED : Y
+  
+ 	SOURCE: CWF
+  
+ 	EDIT RULES :
+ 	$$$$$$$$$CC
+
+
+ Carrier Claim Provider     	CHAR      1
+ Assignment Indicator Switch
+  
+ 	A switch indicating whether or not the provider
+ 	accepts assignment for the noninstitutional claim.
+  
+	SHORT NAME: ASGMNTCD
+	LONG NAME: CARR_CLM_PRVDR_ASGNMT_IND_SW
+
+ 	LENGTH: 1
+  
+ 	COMMENTS :
+ 	Prior to Version H this field was named:
+ 	CWFB_CLM_PRVDR_ASGNMT_IND_SW.
+ 	 
+ 	SOURCE: CWF
+  
+	CODES:
+	A = Assigned claim
+	N = Non-assigned claim
+
+
+ NCH Claim Provider          	NUM     12
+ Payment Amount
+  
+	Effective with Version H, the total payments
+	made to the provider for this claim (sum of
+ 	ine item provider payment amounts.)
+  
+	NOTE:  Beginning with NCH weekly process date
+	10/3/97 this field was populated with data.
+	Claims processed prior to 10/3/97 will contain
+	zeroes in this field.
+  
+	SHORT NAME: PROV_PMT
+	LONG NAME : NCH_CLM_PRVDR_PMT_AMT
+
+	LENGTH: 9.2    
+	SIGNED: Y
+  
+	SOURCE: NCH QA Process
+
+
+ NCH Claim Beneficiary       	NUM     12
+ Payment Amount
+  
+	Effective with Version H, the total payments
+	made to the beneficiary for this claim (sum of
+	line payment amounts to the beneficiary.)
+  
+	NOTE:  Beginning with NCH weekly process date
+	10/3/97 this field was populated with data.
+	Claims processed prior to 10/3/97 will contain
+	zeroes in this field.
+  
+	SHORT NAME: BENE_PMT
+	LONG NAME: NCH_CLM_BENE_PMT_AMT
+  
+	LENGTH: 9.2
+	SIGNED : Y
+  
+	SOURCE: NCH QA Process
+
+
+ NCH Carrier Claim           	NUM     12
+ Submitted Charge Amount
+  
+	Effective with Version H, the total submitted
+	charges on the claim (the sum of line item
+	submitted charges).
+  
+	NOTE:  During the Version H conversion this field
+	was populated with data throughout history (back to
+	service year 1991).
+  
+	SHORT NAME: SBMTCHRG
+	LONG NAME: NCH_CARR_CLM_SBMTD_CHRG_AMT
+  
+	LENGTH: 9.2
+	SIGNED : Y
+  
+	SOURCE: NCH QA Process
+  
+	EDIT RULES :
+	$$$$$$$$$CC
+
+ NCH Carrier Claim           	NUM      12
+ Allowed Charge Amount
+  
+	Effective with Version H, the total allowed
+	charges on the claim (the sum of line item
+	allowed charges).
+  
+	NOTE:  During the Version H conversion this field
+	was populated with data throughout history (back to
+	service year 1991).
+  
+	SHORT NAME: ALOWCHRG
+	LONG NAME: NCH_CARR_CLM_ALOWD_AMT
+
+	LENGTH: 9.2
+	SIGNED : Y
+  
+	SOURCE: NCH QA Process
+  
+	EDIT RULES :
+	$$$$$$$CC
+
+
+ Carrier Claim Cash          	NUM      12
+ Deductible Applied Amount
+  
+ 	Effective with Version H, the amount of the cash
+ 	deductible as submitted on the claim.
+  
+ 	NOTE:  Beginning with NCH weekly process date
+ 	10/3/97 this field was populated with data.
+ 	Claims processed prior to 10/3/97 will contain
+ 	zeroes in this field.
+  
+	SHORT NAME: DEDAPPLY
+	LONG NAME: CARR_CLM_CASH_DDCTBL_APLD_AMT
+  
+ 	LENGTH: 9.2
+	SIGNED : Y
+  
+ 	SOURCE: CWF
+
+
+ Carrier Claim HCPCS Year     	NUM       1
+ Code
+
+	Effective with Version H, the terminal digit
+	of HCPCS version used to code the claim.
+
+	NOTE:  Beginning with NCH weekly process date
+	10/3/97 this field was populated with data.
+	Claims processed prior to 10/3/97 will contain
+	zeroes in this field.
+
+	1 DIGIT UNSIGNED
+
+	SHORT NAME: HCPCS_YR
+	LONG NAME: CARR_CLM_HCPCS_YR_CD
+
+	SOURCE:
+	CWF
+
+
+ Primary Claim Diagnosis Code    CHAR      5
+
+	The ICD-9-CM based code identifying the
+	beneficiary's principal diagnosis.
+
+	SHORT NAME: DGNSCD1
+	LONG NAME: ICD9_DGNS_CD1
+
+	EDIT-RULES:
+	ICD-9-CM
+
+ Claim Diagnosis Code II	 CHAR	   5
+
+	The ICD-9-CM based code identifying the
+	beneficiary's second diagnosis.
+
+	SHORT NAME: DGNSCD2
+	LONG NAME: ICD9_DGNS_CD2
+
+	EDIT-RULES:
+	ICD-9-CM
+
+ Claim Diagnosis Code III	 CHAR	   5
+
+	The ICD-9-CM based code identifying the
+	beneficiary's third diagnosis.
+
+	SHORT NAME: DGNSCD3
+	LONG NAME: ICD9_DGNS_CD3
+
+	EDIT-RULES:
+	ICD-9-CM
+
+
+ Claim Diagnosis Code IV	 CHAR	   5
+
+	The ICD-9-CM based code identifying the
+	beneficiary's fourth diagnosis.
+
+	SHORT NAME: DGNSCD4
+	LONG NAME: ICD9_DGNS_CD4
+
+	EDIT-RULES:
+	ICD-9-CM
+
+
+ Claim Diagnosis Code V	 	 CHAR	   5
+
+	The ICD-9-CM based code identifying the
+	beneficiary's fifth diagnosis.  New
+	variable effective in 2007.
+
+	SHORT NAME: DGNSCD5
+	LONG NAME: ICD9_DGNS_CD5
+
+	EDIT-RULES:
+	ICD-9-CM
+
+ Claim Diagnosis Code VI	 CHAR	   5
+
+	The ICD-9-CM based code identifying the
+	beneficiary's sixth diagnosis.  New
+	variable effective in 2007.
+
+	SHORT NAME: DGNSCD6
+	LONG NAME: ICD9_DGNS_CD6
+
+	EDIT-RULES:
+	ICD-9-CM
+
+ Claim Diagnosis Code VII	 CHAR	   5
+
+	The ICD-9-CM based code identifying the
+	beneficiary's seventh diagnosis.  New
+	variable effective in 2007.
+
+	SHORT NAME: DGNSCD7
+	LONG NAME: ICD9_DGNS_CD7
+
+	EDIT-RULES:
+	ICD-9-CM
+
+ Claim Diagnosis Code VIII	 CHAR	   5
+
+	The ICD-9-CM based code identifying the
+	beneficiary's eighth diagnosis.  New
+	variable effective in 2007.
+
+	SHORT NAME: DGNSCD8
+	LONG NAME: ICD9_DGNS_CD8
+
+	EDIT-RULES:
+	ICD-9-CM
+
+ DMERC Claim Ordering         	 CHAR      6
+ Physician UPIN Number
+
+	Effective with Version G, the unique physician
+	identification number (UPIN) of the physician
+	ordering the Part B services/DMEPOS item.
+
+	SHORT NAME: RFR_UPIN
+	LONG NAME: RFR_PHYSN_UPIN
+
+	SOURCE:
+	CWF
+
+ DMERC Claim Ordering         	 CHAR     10
+ Physician NPI Number
+
+	A placeholder field (effective with Version H)
+	for storing the NPI assigned to the physician
+	ordering the Part B services/DMEPOS item.
+
+	SHORT NAME: RFR_NPI
+	LONG NAME: RFR_PHYSN_NPI
+
+	SOURCE:
+	CWF
+
+ Claim Clinical Trial Number     CHAR      8
+  
+
+        The number used to identify all items
+	and services provided to a beneficiary
+	during their participation in a 
+	clinical trial. 
+	
+
+	SHORT NAME: CCLTRNUM
+	LONG NAME: CLM_CLNCL_TRIL_NUM
+
+	SOURCE:
+	CWF
+
+
+ DATE OF BIRTH FROM CLAIM      	 DATE      8    
+
+	THIS DATE SPECIFIES THE BENEFICIARY'S DATE OF
+	BIRTH AS NOTED ON THE CLAIM.
+
+	8 DIGITS
+
+	SHORT NAME: DOB_DT
+	LONG NAME: DOB_DT
+
+	EDIT-RULES:
+	YYYYMMDD
+
+	LIMITATIONS:
+	DATE OF BIRTH WILL BE POPULATED FOR CLAIMS PROCESSED 
+	BETWEEN 1999-2004 AND CLAIMS PROCESSED AFTER 
+	FEBRUARY 2008.  THESE FIELDS WILL LIKELY BE 
+	NULL FOR CLAIMS PROCESSED BETWEEN 2005-2007 
+	(THESE FIELDS ARE MORE LIKELY TO BE POPULATED 
+	IN CLAIMS WITH SERVCIE DATES IN THE LATTER PART 
+	OF 2007-FORWARD).
+	
+	
+
+ GENDER CODE FROM CLAIM          CHAR      1    
+
+	THIS FIELD INDICATES THE SEX OF THE
+	BENEFICIARY AS NOTED ON THE CLAIM.
+	
+	SHORT NAME: GNDR_CD
+	LONG NAME: GNDR_CD
+
+	CODES:
+	0 = UNKNOWN
+	1 = MALE
+	2 = FEMALE
+
+	LIMITATIONS:
+	GENDER CODE WILL BE POPULATED FOR CLAIMS PROCESSED 
+	BETWEEN 1999-2004 AND CLAIMS PROCESSED AFTER 
+	FEBRUARY 2008.  THESE FIELDS WILL LIKELY BE 
+	NULL FOR CLAIMS PROCESSED BETWEEN 2005-2007 
+	(THESE FIELDS ARE MORE LIKELY TO BE POPULATED 
+	IN CLAIMS WITH SERVCIE DATES IN THE LATTER PART 
+	OF 2007-FORWARD).
+	
+	
+
+ RACE CODE FROM CLAIM           CHAR      1    
+
+	THE RACE OF A BENEFICIARY AS NOTED ON 
+	THE CLAIM.
+
+	SHORT NAME: RACE_CD
+	LONG NAME: BENE_RACE_CD
+
+	CODES:
+	0 = UNKNOWN
+	1 = WHITE
+	2 = BLACK
+	3 = OTHER
+	4 = ASIAN
+	5 = HISPANIC
+	6 = NORTH AMERICAN NATIVE
+
+	SQL-INFO:
+	CHAR(1)       NOT NULL
+
+	LIMITATIONS:
+	RACE CODE WILL BE POPULATED FOR CLAIMS PROCESSED 
+	BETWEEN 1999-2004 AND CLAIMS PROCESSED AFTER 
+	FEBRUARY 2008.  THESE FIELDS WILL LIKELY BE 
+	NULL FOR CLAIMS PROCESSED BETWEEN 2005-2007 
+	(THESE FIELDS ARE MORE LIKELY TO BE POPULATED 
+	IN CLAIMS WITH SERVCIE DATES IN THE LATTER PART 
+	OF 2007-FORWARD).
+
+	
+
+ COUNTY CODE FROM CLAIM (SSA) 	CHAR      3   
+
+	THIS CODE SPECIFIES THE SSA CODE FOR THE
+	COUNTY OF RESIDENCE OF THE BENEFICIARY AS
+  	NOTED ON THE CLAIM.EACH STATE HAS A SERIES 
+	OF CODES BEGINNING WITH '000' FOR EACH 
+	COUNTY WITHIN THAT STATE.CERTAIN CITIES 
+	WITHIN THAT STATE HAVE THEIR OWN CODE.  
+	COUNTY CODES MUST BE COMBINED WITH STATE 
+	CODES IN ORDER TO LOCATE THE SPECIFIC COUNTY.
+	THE CODING SYSTEM IS THE SSA SYSTEM, NOT 
+	THE FEDERAL INFORMATION PROCESSING 
+	SYSTEM (FIPS).
+
+	SHORT NAME: CNTY_CD
+	LONG NAME: BENE_COUNTY_CD
+
+	EDIT-RULES:
+	NUMERIC
+
+	LIMITATIONS:
+	SOME CODES MAY BE INVALID, UNKNOWN, OR '999'.
+	(DIFFERENT FROM FIPS)
+
+	cOUNTY CODE WILL BE POPULATED FOR CLAIMS 
+	PROCESSED BETWEEN 1999-2004 AND CLAIMS PROCESSED 
+	AFTER JANUARY 2009.  THESE FIELDS WILL LIKELY BE 
+	NULL FOR CLAIMS PROCESSED BETWEEN 2005-2008 (THESE 
+	FIELDS ARE MORE LIKELY TO BE POPULATED IN CLAIMS 
+	WITH SERVICE DATES IN THE LATTER PART OF 2008-FORWARD).
+
+	
+
+ STATE CODE FROM CLAIM (SSA)    CHAR      2    
+
+	THIS FIELD SPECIFIES THE STATE OF RESIDENCE
+	OF THE BENEFICIARY AND IS BASED ON THE MAILING
+	ADDRESS USED FOR CASH BENEFITS OR THE MAILING
+	ADDRESS USED FOR OTHER PURPOSES AS NOTED ON THE CLAIM
+	(FOR EXAMPLE,PREMIUM BILLING).THIS INFORMATION IS
+	MAINTAINED FROM CHANGE OF ADDRESS NOTICES
+	SENT IN BY THE BENEFICIARIES, AND IS APPENDED
+	TO THE RECORD AT TIME OF PROCESSING IN CENTRAL
+	OFFICE.  THE CODING SYSTEM IS THE SSA SYSTEM,
+	NOT THE FEDERAL INFORMATION PROCESSING
+	STANDARD (FIPS).
+
+	SHORT NAME: STATE_CD
+	LONG NAME: BENE_STATE_CD
+
+	LIMITATIONS:
+	IN SOME CASES, THE CODE MAY NOT BE THE
+	ACTUAL STATE OF RESIDENCE.  (FOR EXAMPLE,
+	IF THE BENEFICIARY HAS A REPRESENTATIVE PAYEE).
+
+	sTATE CODE WILL BE POPULATED FOR CLAIMS 
+	PROCESSED BETWEEN 1999-2004 AND CLAIMS PROCESSED 
+	AFTER JANUARY 2009.  THESE FIELDS WILL LIKELY BE 
+	NULL FOR CLAIMS PROCESSED BETWEEN 2005-2008 (THESE 
+	FIELDS ARE MORE LIKELY TO BE POPULATED IN CLAIMS 
+	WITH SERVICE DATES IN THE LATTER PART OF 2008-FORWARD).
+
+	
+
+ ZIP CODE OF RESIDENCE        CHAR       9  
+ FROM CLAIM 
+
+	THIS FIELD SPECIFIES THE ZIP CODE AND IS
+	BASED UPON THE MAILING ADDRESS USED FOR
+	CASH BENEFITS TO THE BENEFICIARY OR FOR
+	OTHER PURPOSES AS NOTED ON THE CLAIM
+	(E.G., PREMIUM BILLING).
+
+	9 DIGITS
+
+	SHORT NAME: ZIP_CD
+	LONG NAME: BENE_MLG_CNTCT_ZIP_CD
+
+	EDIT-RULES:
+	9-DIGIT ZIP
+	5-DIGIT ZIP - ZERO BACK FILLED
+	3-DIGIT ZIP - ALL NINES
+	NO ZIP - ALL ZEROS
+
+	COMMENT:
+	CODES IDENTIFY POSTAL SERVICE AREAS
+	WITHIN THE U.S.A. BUT DO NOT NECESSARILY
+	ADHERE TO BOUNDARIES OF CITIES, COUNTIES,
+	STATES,  OR OTHER JURISDICTIONS.  THE
+	CODE IS APPENDED TO THE RECORD AT TIME
+	OF PROCESSING IN CENTRAL OFFICE.
+	THE FIRST THREE POSITIONS OF THE ZIP CODE
+	REPRESENT A PARTICULAR SECTIONAL POSTAL
+	CENTER OR A METROPOLITAN CITY.  THE FOLLOWING
+	TWO DIGITS REPRESENT THE ASSOCIATED POST
+	POST OFFICE SERVED BY THE POSTAL CENTER OR
+	THE DELIVERY AREA SERVED BY THE POSTAL STATION.
+
+	LIMITATIONS:
+	ZIP CODE MAY NOT CORRESPOND WITH STATE
+	OF RESIDENCE.
+
+	ZIP CODE WILL BE POPULATED FOR CLAIMS 
+	PROCESSED BETWEEN 1999-2004 AND CLAIMS PROCESSED 
+	AFTER JANUARY 2009.  THESE FIELDS WILL LIKELY BE 
+	NULL FOR CLAIMS PROCESSED BETWEEN 2005-2008 (THESE 
+	FIELDS ARE MORE LIKELY TO BE POPULATED IN CLAIMS 
+	WITH SERVICE DATES IN THE LATTER PART OF 2008-FORWARD).
+
+	
+
+CCW DMERC Line File:
+
+
+ Claim Line Number	 	NUM	  13
+
+	This number is assigned when a claim is 
+	processed in the Chronic Condition Warehouse.
+	It distinguishes services that are submitted on
+	the same claim.
+
+	SHORT NAME: LINE_NUM
+	LONG NAME: LINE_NUM
+
+	SOURCE:
+	CCW
+
+ Line Provider Tax Number      CHAR       10
+
+	Social security number or employee
+	identification number of physician/supplier
+	used to identify to whom payment is made for
+	the line item service on the noninstitutional
+	claim.
+
+	SHORT NAME: TAX_NUM
+	LONG NAME: TAX_NUM
+
+	SOURCE:
+	CWF
+
+ Line HCFA Provider            CHAR        2
+ Specialty Code
+
+	HCFA specialty code used for pricing the
+	line item service on the noninstitutional
+	claim.
+
+	SHORT NAME: HCFASPCL
+	LONG NAME: PRVDR_SPCLTY
+
+	SOURCE:
+	CWF
+
+ Line Provider Participating   CHAR        1
+ Indicator Code
+
+	Code indicating whether or not a provider is
+	participating or accepting assignment for this
+	line item service on the noninstitutional claim.
+
+	SHORT NAME: PRTCPTG
+	LONG NAME: PRTCPTNG_IND_CD
+
+	CODES:
+	Line Provider Participating Indicator Table
+	-------------------------------------------
+	1 = Participating
+	2 = All or some covered and allowed
+	    expenses applied to deductible Participating
+	3 = Assignment accepted/non-participating
+	4 = Assignment not accepted/non-participating
+	5 = Assignment accepted but all or some covered and allowed expenses applied
+	    to deductible Non-participating.
+	6 = Assignment not accepted and all covered and allowed expenses applied to 
+	    deductible non-participating.
+	7 = Participating provider not accepting assignment.
+
+	SOURCE:
+	CWF
+
+
+ Line Service Count          	NUM        3
+
+	The count of the total number of services
+	processed for the line item on the non-institutional
+	claim.
+
+	3 DIGITS SIGNED
+
+	SHORT NAME: SRVC_CNT
+	LONG NAME: LINE_SRVC_CNT
+
+	SOURCE:
+	CWF
+
+
+ Line HCFA Type Service Code  	CHAR      1
+
+	Code indicating the type of service, as defined
+	in the HCFA Medicare Carrier Manual, for this
+	line item on the non-institutional claim.
+
+	SHORT NAME: TYPSRVCB
+	LONG NAME: LINE_CMS_TYPE_SRVC_CD
+
+	EDIT-RULES:
+	The only type of service codes applicable to DMERC
+	claims are: 1, 9, A, E, G, H, J, K, L, M, P,
+	R, and S.
+
+	CODES:
+	HCFA Type of Service Table
+	--------------------------
+	1 = Medical care
+	2 = Surgery
+	3 = Consultation
+	4 = Diagnostic radiology
+	5 = Diagnostic laboratory
+	6 = Therapeutic radiology
+	7 = Anesthesia
+	8 = Assistant at surgery
+	9 = Other medical items or services
+	0 = Whole blood only eff 01/96, whole blood or packed red cells before 01/96
+	A = Used durable medical equipment (DME)
+	B = High risk screening mammography (obsolete 1/1/98)
+	C = Low risk screening mammography (obsolete 1/1/98)
+	D = Ambulance (eff 04/95)
+	E = Enteral/parenteral nutrients/supplies (eff 04/95)
+	F = Ambulatory surgical center (facility usage for surgical services)
+	G = Immunosuppressive drugs
+	H = Hospice services (discontinued 01/95)
+	I = Purchase of DME (installment basis) (discontinued 04/95)
+	J = Diabetic shoes (eff 04/95)
+	K = Hearing items and services (eff 04/95)
+	L = ESRD supplies (eff 04/95) (renal supplier in the home before 04/95)
+	M = Monthly capitation payment for dialysis
+	N = Kidney donor
+	P = Lump sum purchase of DME, prosthetics, orthotics
+	Q = Vision items or services
+	R = Rental of DME
+	S = Surgical dressings or other medical supplies (eff 04/95)
+	T = Psychological therapy (term. 12/31/97)
+	    outpatient mental health limitation (eff. 1/1/98)
+	U = Occupational therapy
+	V = Pneumococcal/flu vaccine (eff 01/96),
+	    Pneumococcal/flu/hepatitis B vaccine (eff 04/95-12/95),
+	    Pneumococcal only before 04/95
+	W = Physical therapy
+	Y = Second opinion on elective surgery (obsoleted 1/97)
+	Z = Third opinion on elective surgery (obsoleted 1/97)
+
+	SOURCE:
+	CWF
+
+
+ Line Place Of Service Code   	CHAR      2
+
+	The code indicating the place of service, as
+	defined in the Medicare Carrier Manual, for
+	this line item on the noninstitutional claim.
+
+	SHORT NAME: PLCSRVC
+	LONG NAME: LINE_PLACE_OF_SRVC_CD
+
+	CODES:
+	Line Place Of Service Table
+	---------------------------
+ 	           **Prior To 1/92**
+	1 = Office
+	2 = Home
+	3 = Inpatient hospital
+	4 = SNF
+	5 = Outpatient hospital
+	6 = Independent lab
+	7 = Other
+	8 = Independent kidney disease treatment center
+	9 = Ambulatory
+	A = Ambulance service
+	H = Hospice
+	M = Mental health, rural mental health
+	N = Nursing home
+	R = Rural codes
+      ---------------------------------------
+             **Effective 1/92**
+	11 = Office
+	12 = Home
+	21 = Inpatient hospital
+	22 = Outpatient hospital
+	23 = Emergency room - hospital
+	24 = Ambulatory surgical center
+	25 = Birthing center
+	26 = Military treatment facility
+	31 = Skilled nursing facility
+	32 = Nursing facility
+	33 = Custodial care facility
+	34 = Hospice
+	35 = Adult living care facilities (ALCF) (eff. NYD - added 12/3/97)
+	41 = Ambulance - land
+	42 = Ambulance - air or water
+	50 = Federally qualified health centers (eff. 10/1/93)
+	51 = Inpatient psychiatric facility
+	52 = Psychiatric facility partial hospitalization
+	53 = Community mental health center
+	54 = Intermediate care facility/mentally retarded
+	55 = Residential substance abuse treatment facility
+	56 = Psychiatric residential treatment center
+	60 = Mass immunizations center (eff. 9/1/97)
+	61 = Comprehensive inpatient rehabilitation facility
+	62 = Comprehensive outpatient rehabilitation facility
+	65 = End stage renal disease treatment facility
+	71 = State or local public health clinic
+	72 = Rural health clinic
+	81 = Independent laboratory
+	99 = Other unlisted facility
+
+	SOURCE:
+	CWF
+
+
+ Line First Expense Date     	DATE      8
+
+	Beginning date (1st expense) for this line item
+	service on the noninstitutional
+	claim.
+	
+	8 DIGITS UNSIGNED
+
+	SHORT NAME: EXPNSDT1
+	LONG NAME: LINE_1ST_EXPNS_DT
+
+	EDIT-RULES:
+	YYYYMMDD
+
+	SOURCE:
+	CWF
+
+ Line Last Expense Date      	DATE      8
+
+	The ending date (last expense) for the line
+	item service on the noninstitutional claim.
+
+	8 DIGITS UNSIGNED
+
+	SHORT NAME: EXPNSDT2
+	LONG NAME: LINE_LAST_EXPNS_DT
+
+	EDIT-RULES:
+	YYYYMMDD
+
+	SOURCE:
+	CWF
+
+ Line HCPCS Code              	CHAR      5
+
+	The Health Care Financing Administration (HCFA)
+	Common Procedure Coding System (HCPCS) is a
+	collection of codes that represent procedures,
+	supplies, products and services which may be
+	provided to Medicare beneficiaries and to
+	individuals enrolled in private health
+	insurance programs.  The codes are divided
+	into three levels, or groups, as described
+	below:
+
+	SHORT NAME: HCPCS_CD
+	LONG NAME: HCPCS_CD
+
+	COMMENT:
+	Prior to Version H this line item field was
+	named: HCPCS_CD.  With Version H, a prefix
+	was added to denote the location of this field
+	on each claim type (institutional: REV_CNTR and
+	noninstitutional: LINE).
+
+	Level I
+	   Codes and descriptors copyrighted by the American
+	   Medical Association's Current Procedural
+	   Terminology, Fourth Edition (CPT-4).  These are
+	   5 position numeric codes representing physician
+	   and nonphysician services.
+
+	   **** Note: ****
+	   CPT-4 codes including both long and short
+	   descriptions shall be used in accordance with the
+	   HCFA/AMA agreement.  Any other use violates the
+	   AMA copyright.
+
+	Level II
+	   Includes codes and descriptors copyrighted by
+	   the American Dental Association's Current Dental
+	   Terminology, Second Edition (CDT-2).  These are
+	   5 position alpha-numeric codes comprising
+	   the D series.  All other level II codes and
+	   descriptors are approved and maintained jointly
+	   by the alpha-numeric editorial panel (consisting
+	   of HCFA, the Health Insurance Association of
+	   America, and the Blue Cross and Blue Shield
+	   Association).  These are 5 position alpha-
+	   numeric codes representing primarily items and
+	   nonphysician services that are not
+	   represented in the level I codes.
+
+	Level III
+	   Codes and descriptors developed by Medicare
+	   carriers for use at the local (carrier) level.
+	   These are 5 position alpha-numeric codes in the
+	   W, X, Y or Z series representing physician
+	   and nonphysician services that are not
+	   represented in the level I or level II codes.
+
+
+ Line HCPCS Initial Modifier  	CHAR      2
+ Code
+
+	A first modifier to the HCPCS procedure code
+	to enable a more specific procedure
+	identification for the line item service
+	on the noninstitutional claim.
+
+	SHORT NAME: MDFR_CD1
+	LONG NAME: HCPCS_1ST_MDFR_CD
+
+	EDIT-RULES:
+	CARRIER INFORMATION FILE
+
+	COMMENT:
+	Prior to Version H this field was named:
+	HCPCS_INITL_MDFR_CD.  With Version H, a prefix
+	was added to denote the location of this field
+	on each claim type (institutional: REV_CNTR and
+	noninstitutional: LINE).
+
+	SOURCE:
+	CWF
+
+ Line HCPCS Second Modifier    CHAR      2
+ Code
+
+	A second modifier to the HCPCS procedure code to
+	make it more specific than the first modifier
+	code to identify the line item procedures for
+	this claim.
+
+	SHORT NAME: MDFR_CD2
+	LONG NAME: HCPCS_2ND_MDFR_CD
+
+	EDIT-RULES:
+	CARRIER INFORMATION FILE
+
+	COMMENT:
+	Prior to Version H this field was named:
+	HCPCS_2ND_MDFR_CD.  With Version H, a prefix
+	was added to denote the location of this field
+	on each claim type (institutional: REV_CNTR and
+	noninstitutional: LINE).
+
+	SOURCE:
+	CWF
+
+ Line NCH BETOS Code           CHAR      3
+
+	Effective with Version H, the Berenson-Eggers
+	type of service (BETOS) for the procedure code
+	based on generally agreed upon clinically
+	meaningful groupings of procedures and services.
+	This field is included as a line item on the
+	noninstitutional claim.
+
+	NOTE:  During the Version H conversion this field
+	was populated with data throughout history (back
+	to service year 1991).
+
+	For 2006 forward, refer to CMS web site for
+	crosswalk of BETOS to HCPCS_CD.
+
+	SHORT NAME: BETOS
+	LONG NAME: BETOS_CD
+
+	DERIVATION:
+	DERIVED FROM:
+	  LINE_HCPCS_CD
+	  LINE_HCPCS_INITL_MDFR_CD
+	  LINE_HCPCS_2ND_MDFR_CD
+	  HCPCS MASTER FILE
+
+	DERIVATION RULES:
+	Match the HCPCS on the claim to the HCPCS on
+	the HCPCS Master File to obtain the BETOS code.
+
+	SOURCE:
+	NCH
+
+ Line NCH Payment Amount      	NUM     12
+
+	Amount of payment made from the trust funds (after
+	deductible and coinsurance amounts have been
+	paid) for the line item service on the non-
+	institutional claim.
+
+	9.2 DIGITS SIGNED
+
+	SHORT NAME: LINEPMT
+	LONG NAME: LINE_NCH_PMT_AMT
+
+	EDIT-RULES:
+	$$$$$$$$$CC
+
+	SOURCE:
+	NCH
+
+ Line Beneficiary Payment    	NUM     12
+ Amount
+
+	Effective with Version H, the payment (reim-
+	bursement) made to the beneficiary related
+	to the line item service on the noninstitu-
+	tional claim.
+
+	NOTE:  Beginning with NCH weekly process date
+	10/3/97 this field was populated with data.
+	Claims processed prior to 10/3/97 will contain
+	zeroes in this field.
+
+	9.2 DIGITS SIGNED
+
+	SHORT NAME: LBENPMT
+	LONG NAME: LINE_BENE_PMT_AMT
+
+	SOURCE:
+	CWF
+
+
+ Line Provider Payment       	NUM     12
+ Amount
+
+	Effective with Version H, the payment
+	made to the provider for the line item
+	service on the noninstitutional claim.
+
+	NOTE:  Beginning with NCH weekly process date
+	10/3/97 this field was populated with data.
+	Claims processed prior to 10/3/97 will contain
+	zeroes in this field.
+
+	9.2 DIGITS SIGNED
+
+	SHORT NAME: LPRVPMT
+	LONG NAME: LINE_PRVDR_PMT_AMT
+
+	SOURCE:
+	CWF
+
+
+ Line Beneficiary Part B     	NUM     12
+ Deductible Amount
+
+	The amount of money for which the
+	carrier has determined that the beneficiary
+	is liable for the Part B cash deductible
+	for the line item service on the noninstitutional
+	claim.
+
+	9.2 DIGITS SIGNED
+
+	SHORT NAME: LDEDAMT
+	LONG NAME: LINE_BENE_PTB_DDCTBL_AMT
+
+	EDIT-RULES:
+	$$$$$$$$$CC
+
+	SOURCE:
+	CWF
+
+
+ Line Beneficiary Primary    	CHAR      1
+ Payer Code
+
+	The code specifying a federal non-Medicare program
+	or other source that has primary responsibility
+	for the payment of the Medicare beneficiary's
+	medical bills relating to the line item service
+	on the noninstitutional claim.
+
+	SHORT NAME: LPRPAYCD
+	LONG NAME: LINE_BENE_PRMRY_PYR_CD
+
+	CODES:
+	Beneficiary Primary Payer Table
+	-------------------------------
+	A = Working aged bene/spouse with employer group health plan (EGHP)
+	B = End stage renal disease (ESRD) beneficiary in the 18 month
+	    coordination period with an employer group health plan
+	C = Conditional payment by Medicare; future reimbursement expected
+	D = Automobile no-fault (eff. 4/97; Prior to 3/94, also included
+	    any liability insurance)
+	E = Workers' compensation
+	F = Public Health Service or other federal agency (other than Dept.
+	    of Veterans Affairs)
+	G = Working disabled bene (under age 65 with LGHP)
+	H = Black Lung
+	I = Dept. of Veterans Affairs
+	J = Any liability insurance (eff. 3/94 - 3/97)
+	L = Any liability insurance (eff. 4/97) (eff. 12/90 for carrier claims
+	    and 10/93 for FI claims; obsoleted for all claim types 7/1/96)
+	M = Override code:  EGHP services involved (eff. 12/90 for carrier
+	    claims and 10/93 for FI claims; obsoleted for all claim types 7/1/96)
+	N = Override code:  non-EGHP services involved (eff. 12/90 for carrier
+	    claims and 10/93 for FI claims; obsoleted for all claim types 7/1/96)
+
+	BLANK = Medicare is primary payer (not sure of effective date:
+	        in use 1/91, if not earlier)
+
+	T = MSP cost avoided - IEQ contractor (eff. 7/96 carrier claims only)
+	U = MSP cost avoided - HMO rate cell adjust- ment contractor (eff.
+	    7/96 carrier claims only)
+	V = MSP cost avoided - litigation settlement contractor (eff. 7/96
+	    carrier claims only)
+	X = MSP cost avoided override code (eff. 12/90 for carrier claims
+	    and 10/93 for FI claims; obsoleted for all claim types 7/1/96)
+
+             ***Prior to 12/90***
+
+	Y = Other secondary payer investigation shows Medicare as primary payer
+	Z = Medicare is primary payer
+
+	NOTE:  Values C, M, N, Y, Z and BLANK indicate Medicare is primary payer.
+	       (values Z and Y were used prior to 12/90.  BLANK was suppose to be
+	       effective after 12/90, but may have been used prior to that date.)
+
+	SOURCE:
+	CWF,VA,DOL,SSA
+
+
+ Line Beneficiary Primary     	 NUM     12
+ Payer Paid Amount
+
+	The amount of a payment made on behalf of a
+	Medicare beneficiary by a primary payer other
+	than Medicare, that the provider is applying
+	to covered Medicare charges for to the line
+	ITEM SERVICE ON THE NONINSTITUTIONAL.
+
+	9.2 DIGITS SIGNED
+
+	SHORT NAME: LPRPDAMT
+	LONG NAME: LINE_BENE_PRMRY_PYR_PD_AMT
+
+	EDIT-RULES:
+	$$$$$$$$$CC
+
+	SOURCE:
+	CWF
+
+
+ Line Coinsurance Amount      	NUM      12
+
+	Effective with Version H, the beneficiary
+	coinsurance liability amount for this line
+	item service on the noninstitutional claim.
+
+	NOTE:  Beginning with NCH weekly process date
+	10/3/97 this field was populated with data.
+	Claims processed prior to 10/3/97 will contain
+	zeroes in this field.
+
+	9.2 DIGITS SIGNED
+
+	SHORT NAME: COINAMT
+	LONG NAME: LINE_COINSRNC_AMT
+
+	SOURCE:
+	CWF
+
+
+ Line Primary Payer Allowed   	NUM     12
+ Charge Amount
+
+	Effective with Version H, the primary payer
+	allowed charge amount for the line item
+	service on the noninstitutional claim.
+
+	NOTE:  Beginning with NCH weekly process date
+	10/3/97 this field was populated with data.
+	Claims processed prior to 10/3/97 will contain
+	zeroes in this field.
+
+	9.2 DIGITS SIGNED
+
+	SHORT NAME: PRPYALOW
+	LONG NAME: LINE_PRMRY_ALOWD_CHRG_AMT
+
+	SOURCE:
+	CWF
+
+
+ Line Submitted Charge        	NUM    12
+ Amount
+
+	The amount of submitted charges for the line
+	item service on the noninstitutional claim.
+
+	9.2 DIGITS SIGNED
+
+	SHORT NAME: LSBMTCHG
+	LONG NAME: LINE_SBMTD_CHRG_AMT
+
+	EDIT-RULES:
+	$$$$$$$$$CC
+
+	SOURCE:
+	CWF
+
+
+ Line Allowed Charge Amount  	NUM     12
+
+	The amount of allowed charges for the line
+	item service on the noninstitutional claim. This
+	charge is used to compute pay to providers or
+	reimbursement to beneficiaries. **NOTE: The
+	allowed charge is determined by the lower of
+	three charges:  prevailing, customary or actual.
+
+	9.2 DIGITS SIGNED
+
+	SHORT NAME: LALOWCHG
+	LONG NAME: LINE_ALOWD_CHRG_AMT
+
+	EDIT-RULES:
+	$$$$$$$$CC
+
+	SOURCE:
+	CWF
+
+
+ Line Processing Indicator    	CHAR      1
+ Code
+
+	The code indicating the reason a line item
+	on the noninstitutional claim was allowed
+	or denied.
+
+	SHORT NAME: PRCNGIND
+	LONG NAME: LINE_PRCSG_IND_CD
+
+	CODES:
+	Line Processing Indicator Table
+	-------------------------------
+	A = Allowed
+	B = Benefits exhausted
+	C = Noncovered care
+	D = Denied (existed prior to 1991; from BMAD)
+	I = Invalid data
+	L = CLIA (eff 9/92)
+	M = Multiple submittal--duplicate line item
+	N = Medically unnecessary
+	O = Other
+	P = Physician ownership denial (eff 3/92)
+	Q = MSP cost avoided (contractor #88888) - voluntary agreement (eff. 1/98)
+	R = Reprocessed--adjustments based on subsequent reprocessing of claim
+	S = Secondary payer
+	T = MSP cost avoided - IEQ contractor (eff. 7/76)
+	U = MSP cost avoided - HMO rate cell adjustment (eff. 7/96)
+	V = MSP cost avoided - litigation settlement (eff. 7/96)
+	X = MSP cost avoided - generic
+	Y = MSP cost avoided - IRS/SSA data match project
+	Z = Bundled test, no payment (eff. 1/1/98)
+
+	SOURCE:
+	CWF
+
+
+ Line Payment 80%/100% Code   	CHAR      1
+
+	The code indicating that the amount shown in the
+	payment field on the noninstitutional line item
+	represents either 80% or 100% of the allowed
+	charges less any deductible, or 100% limitation
+	of liability only.
+
+	SHORT NAME: PMTINDSW
+	LONG NAME: LINE_PMT_80_100_CD
+
+	CODES:
+	0 = 80%
+	1 = 100%
+	3 = 100% Limitation of liability only
+
+	SOURCE:
+	CWF
+
+ Line Service Deductible      	CHAR      1
+ Indicator Switch
+
+	Switch indicating whether or not the line item
+	service on the noninstitutional claim is subject
+	to a deductible.
+
+	SHORT NAME: DED_SW
+	LONG NAME: LINE_SERVICE_DEDUCTIBLE
+
+	CODES:
+	0 = Service subject to deductible
+	1 = Service not subject to deductible
+
+	SOURCE:
+	CWF
+
+ Line Diagnosis Code         	CHAR      5
+
+	The ICD-9-CM code indicating the diagnosis
+	supporting this line item procedure/service
+	on the noninstitutional claim.
+
+	SHORT NAME: LINEDGNS
+	LONG NAME: LINE_ICD9_DGNS_CD
+
+	EDIT-RULES:
+	ICD-9-CM
+
+	SOURCE:
+	CWF
+
+ Line DME Purchase Price       	NUM      12
+ Amount
+
+	Effective 5/92, the amount representing the
+	lower of fee schedule for purchase of new or
+	used DME, or actual charge.  In case of rental
+	DME, this amount represents the purchase cap;
+	rental payments can only be made until the
+	cap is met.  This line item field is applicable
+	to non-institutional claims involving DME,
+	prosthetic, orthotic and supply items,
+	immunosuppressive drugs, pen, ESRD and oxygen
+	items referred to as DMEPOS.
+
+	9.2 DIGITS SIGNED
+
+	SHORT NAME: DME_PURC
+	LONG NAME: LINE_DME_PRCHS_PRICE_AMT
+
+	EDIT-RULES:
+	$$$$$$$$$CC
+
+	SOURCE:
+	CWF
+
+
+ DMERC Line Supplier         	CHAR     10
+ Provider Number
+
+	Effective with Version G, billing number assigned
+	to the supplier of the Part B service/DMEPOS by the
+	National Supplier Clearinghouse, as reported on the
+	line item for the DMERC claim.
+
+	SHORT NAME: SUPLRNUM
+	LONG NAME: PRVDR_NUM
+
+	SOURCE:
+	CWF
+
+
+ DMERC Line Item Supplier     	CHAR     10
+ NPI Number
+
+	A placeholder field (effective with Version H)
+	for storing the NPI assigned to the supplier
+	of the Part B service/DMEPOS line item.
+
+	SHORT NAME: SUP_NPI
+	LONG NAME: PRVDR_NPI
+
+	SOURCE:
+	CWF
+
+
+ DMERC Line Pricing State     	CHAR      2
+ Code
+
+	The two position state postal abbreviation code 
+	representing the pricing location of the service 
+	reported on the DMERC line item.
+	This is usually the beneficiary state of
+	residence.
+
+	Note: the BENE_RSDNC_SSA_STD_STATE_CD reported
+	in the fixed portion of the DMERC claim record
+	may differ from this field.  This can happen
+	when the beneficiary is in another state when
+	the service is rendered (other than the
+	primary residence state), or the beneficiary
+	has moved to another state and the CWF master
+	record has not yet been changed.
+
+	SHORT NAME: PRCNG_ST
+	LONG NAME: DMERC_LINE_PRCNG_STATE_CD
+
+	SOURCE:
+	CWF/NCH
+
+
+ DMERC Line Provider State    	CHAR      2
+ Code
+
+	The two position state postal abbreviation code 
+	representing the supplier's location, as reported 
+	on the DMERC line item.
+
+	NOTE: Although created for Version 'G', this
+	field was blank until 1/95 when the supplier
+	state code was added to the DME claim record as
+	a required field.
+
+	SHORT NAME: PRVSTATE
+	LONG NAME: PRVDR_STATE_CD
+
+	SOURCE:
+	WF/NCH
+
+
+ DMERC Line Supplier Type    	CHAR      1
+ Code
+
+	Code identifying the type of supplier
+	furnishing the line item service on the
+	DMERC claim.
+
+	SHORT NAME: SUP_TYPE
+	LONG NAME: DMERC_LINE_SUPPLR_TYPE_CD
+
+	CODES:
+	DMERC Line Supplier Type Table
+	------------------------------
+	0 = Clinics, groups, associations,
+	    partnerships, or other entities
+	    for whom the carrier's own ID number
+	    has been assigned.
+	1 = Physicians or suppliers billing as
+	    solo practitioners for whom SSN's are
+	    shown in the physician ID code field.
+	2 = Physicians or suppliers billing as
+	    solo practitioners for whom the carrier's
+	    own physician ID code is shown.
+	3 = Suppliers (other than sole proprietorship)
+	    for whom EI numbers are used in coding the
+	    ID field.
+	4 = Suppliers (other than sole proprietorship)
+	    for whom the carrier's own code has been
+	    shown.
+	5 = Institutional providers and
+	    independent laboratories for whom EI
+	    numbers are used in coding the ID field.
+	6 = Institutional providers and
+	    independent laboratories for whom the
+	    carrier's own ID number is shown.
+	7 = Clinics, groups, associations, or
+	    partnerships for whom EI numbers
+	    are used in coding the ID field.
+	8 = Other entities for whom EI numbers
+	    are used in coding the ID field or
+	    proprietorship for whom EI numbers are
+	    used in coding the ID field.
+
+	SOURCE:
+	CWF
+
+
+ DMERC Line HCPCS Third       	CHAR      2
+ Modifier Code
+
+	Effective with Version G, a third modifier to the
+	HCPCS procedure code used to process the DMERC line
+	item.
+
+	SHORT NAME: MDFR_CD3
+	LONG NAME: HCPCS_3RD_MDFR_CD
+
+	SOURCE:
+	CWF
+
+
+ DMERC Line HCPCS Fourth      	CHAR      2
+ Modifier Code
+
+	Effective with Version G, a fourth modifier to the
+	HCPCS procedure code used to process the DMERC
+	line item.
+
+	SHORT NAME: MDFR_CD4
+	LONG NAME: HCPCS_4TH_MDFR_CD
+
+	SOURCE:
+	CWF
+
+
+ DMERC Line Screen Savings   	 NUM     12
+ Amount
+
+	Effective with Version G, the amount of savings
+	attributable to the coverage screen for this DMERC
+	line item.
+
+	9.2 DIGITS SIGNED
+
+	SHORT NAME: SCRNSVGS
+	LONG NAME: DMERC_LINE_SCRN_SVGS_AMT
+
+	SOURCE:
+	CWF
+
+
+ DMERC Line                   	 NUM      7
+ Miles/Time/Units/Services
+ Count
+
+	Effective with Version G, the count of the
+	total units associated with the DMERC line item
+	service needing unit reporting, including number
+	of services, volume of oxygen and drug dose.
+
+	7 DIGITS SIGNED
+
+	SHORT NAME: DME_UNIT
+	LONG NAME: DMERC_LINE_MTUS_CNT
+
+	SOURCE:
+	CWF
+
+
+ DMERC Line                   	CHAR      1
+ Miles/Time/Units/Services
+ Indicator Code
+
+	Effective with Version G, the code indicating the
+	type of units reported for the DMERC line item.
+
+	SHORT NAME: UNIT_IND
+	LONG NAME: DMERC_LINE_MTUS_CD
+
+	CODES:
+	0 = Values reported as zero
+	3 = Number of services
+	4 = Oxygen volume units
+	6 = Drug dosage
+
+	SOURCE:
+ 	CWF
+
+
+ Line Hematocrit/Hemoglobin      NUM      4
+ Test Results
+
+        Effective September 1, 2008, with the 
+	implementation of CR#3, the number used
+	to identify the most recent hematocrit
+	or hemoglobin reading on the 
+	non-institutional claim.
+
+	NOTE: The hematocrit/hemoglobin test 
+	result field is a redefined field. The
+	field is being defined as X(3) and 
+	redefinied as numeric (99V9). A numeric
+	test on the alphanumeric field is needed.
+	Whenever a user wants to use the field
+	they must test the alphanumeric field
+	for numerics and if it is numeric then 
+	the 99V9 definition would be used. 
+	The older data will cause an abend if 
+	trying to process numeric data with
+	characters. 
+
+	SHORT NAME: HCTHGBRS
+	LONG NAME: LINE_HCT_HGB_RSLT_NUM
+
+	SOURCE:
+	CWF
+
+
+ Line Hematocrit/Hemoglobin     CHAR      2
+ Test Type Code
+
+        Effective September 1, 2008, with the 
+	implementation of CR#3, the code used
+	to identify which reading is reflected
+	in the hematocrit/hemaglobin result
+	number field on the non-institutional 
+	claim. 
+
+	SHORT NAME: HCTHGBTP
+	LONG NAME: LINE_HCT_HGB_TYPE_CD
+
+	SOURCE:
+	CWF
+
